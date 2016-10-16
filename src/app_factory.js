@@ -8,8 +8,9 @@ module.exports = {
         const app = express();
         app.use(bodyParser.json());
         app.use(function (req, res, next) {
-            console.log(`[UAA] ${req.method} ${req.url}`);
-            req.body && console.log(req.body);
+            const showBody = ['POST', 'PUT'].includes(req.method);
+            const log = `[UAA] ${req.method} ${req.url} ${showBody && JSON.stringify(req.body)}`;
+            console.log(log);
             next();
         });
         app.use(RouterFactory.newRouter(state));
