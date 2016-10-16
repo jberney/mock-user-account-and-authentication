@@ -13,5 +13,13 @@ module.exports = {
             token_type: 'bearer',
             expires_in: 3600
         });
+    },
+    postUsers: state => {
+        return (req, res) => {
+            req.body.id = uuid.v4();
+            state.users || (state.users = {});
+            state.users[req.body.id] = req.body;
+            sendJson(res, state.users[req.body.id]);
+        }
     }
 };

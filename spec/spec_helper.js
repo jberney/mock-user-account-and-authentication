@@ -1,7 +1,6 @@
 const http = require('http');
 
 const host = 'localhost';
-const port = 9000;
 
 module.exports = {
     assertResponse: (expected) => {
@@ -15,7 +14,7 @@ module.exports = {
             done();
         };
     },
-    request: ({method = 'get', path, body}) => {
+    request: ({method = 'get', port, path, body}) => {
         return new Promise((resolve, reject) => {
             const req = http.request({
                 method,

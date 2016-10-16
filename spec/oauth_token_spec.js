@@ -4,7 +4,7 @@ const {assertResponse, caught, request} = require('./spec_helper');
 
 describe('OAuth Token Endpoint', () => {
 
-    const port = 9000;
+    const port = Math.round(1000 + Math.random() * 60000);
 
     let ServerFactory, server;
     beforeEach(() => {
@@ -19,16 +19,14 @@ describe('OAuth Token Endpoint', () => {
     describe('POST /oauth/token', () => {
         const method = 'post';
         const path = '/oauth/token';
-        beforeEach(done => {
-            server = ServerFactory.newServer(port, done);
-        });
+        beforeEach(done => server = ServerFactory.newServer({port}, done));
         it('with client credentials', done => {
             const expected = {
                 access_token: 'ACCESS_TOKEN',
                 token_type: 'bearer',
                 expires_in: 3600
             };
-            request({method, path})
+            request({method, port, path})
                 .then(assertResponse(expected))
                 .then(done)
                 .catch(caught(done));
