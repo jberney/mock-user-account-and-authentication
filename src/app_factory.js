@@ -7,7 +7,7 @@ module.exports = {
     newApp() {
         const app = express();
         app.use(bodyParser.json());
-        app.use('/uaa', RouterFactory.newRouter());
+        app.use(RouterFactory.newRouter());
         return app;
     }
 };

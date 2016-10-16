@@ -18,7 +18,7 @@ describe('OAuth Token Endpoint', () => {
 
     describe('POST /oauth/token', () => {
         const method = 'post';
-        const path = '/uaa/oauth/token';
+        const path = '/oauth/token';
         beforeEach(done => {
             server = ServerFactory.newServer(port, done);
         });
