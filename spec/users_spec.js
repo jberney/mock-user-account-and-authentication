@@ -37,8 +37,10 @@ describe('Users', () => {
             it('returns the user', done => {
                 request({method, port, path})
                     .then(assertResponse({
-                        id: 'USER_ID',
-                        userName: 'USER_NAME'
+                        resources: [{
+                            id: 'USER_ID',
+                            userName: 'USER_NAME'
+                        }]
                     }))
                     .then(() => expect(state.users.USER_ID).toEqual({
                         id: 'USER_ID',
@@ -51,6 +53,11 @@ describe('Users', () => {
         });
         describe('when there is no matching user', () => {
             beforeEach(done => {
+                state.users.USER_ID = {
+                    id: 'USER_ID',
+                    userName: 'NOT_USER_NAME',
+                    active: true
+                };
                 server = ServerFactory.newServer({
                     state,
                     port

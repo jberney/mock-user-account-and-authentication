@@ -2,7 +2,7 @@ const uuid = require('node-uuid');
 const values = require('object.values');
 
 module.exports = {
-    getUsers: state => {
+    listUsers: state => {
         return (req, res) => {
             const {attributes = '', filter} = req.query;
             const filterElements = filter.split(' ', 3);
@@ -19,11 +19,15 @@ module.exports = {
                 const description = `No user found where ${filter}`;
                 return res.status(502) && res.json({description});
             }
-            const result = {};
-            attributes.split(',').forEach(attribute => {
-                result[attribute] = filtered[0][attribute];
+            let attributesList = attributes.split(',');
+            const resources = filtered.map(resource => {
+                const mapped = {};
+                attributesList.forEach(attribute => {
+                    mapped[attribute] = resource[attribute];
+                });
+                return mapped;
             });
-            res.json(result);
+            res.json({resources});
         };
     },
     postOauthToken: (req, res) => {
