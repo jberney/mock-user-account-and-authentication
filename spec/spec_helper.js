@@ -3,6 +3,12 @@ const http = require('http');
 const host = 'localhost';
 
 module.exports = {
+    assertCatch: (expected, done) => {
+        return e => {
+            expect(e).toEqual(expected);
+            done();
+        };
+    },
     assertResponse: (expected) => {
         return actual => {
             expect(actual).toEqual(expected);
@@ -35,9 +41,12 @@ module.exports = {
                 response.on('end', function () {
                     const joined = chunks.join();
                     try {
-                        resolve(JSON.parse(joined));
+                        const parsed = JSON.parse(joined);
+                        if (response.statusCode >= 400) {
+                            return reject(parsed);
+                        }
+                        return resolve(parsed);
                     } catch (e) {
-                        console.error(joined);
                         reject(e);
                     }
                 });
