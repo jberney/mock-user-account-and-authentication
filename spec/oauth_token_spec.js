@@ -27,7 +27,7 @@ describe('OAuth Token Endpoint', () => {
                 expires_in: 3600
             };
             request({method, port, path})
-                .then(assertResponse(expected))
+                .then(assertResponse({statusCode: 200, body: expected}))
                 .then(done)
                 .catch(caught(done));
         });

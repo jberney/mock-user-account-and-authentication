@@ -57,5 +57,16 @@ module.exports = {
             state.users[req.body.id] = req.body;
             res.json(state.users[req.body.id]);
         };
+    },
+    redirect: (req, res) => {
+        const accessToken = ['junk', new Buffer(JSON.stringify({
+            user_name: 'USERNAME',
+            user_id: 'USERID',
+            scope: ['cloud_controller.admin', 'usage_service.audit']
+        })).toString('base64')].join('.');
+        const hash = ['access_token', accessToken].join('=');
+        const redirectUrl = [req.query.redirect_uri, hash].join('#');
+        req.session.loggedIn = true;
+        res.redirect(301, redirectUrl);
     }
 };

@@ -41,10 +41,13 @@ module.exports = {
                     chunks.push(chunk);
                 });
                 response.on('end', function () {
-                    let result = chunks.join();
+                    let result = {
+                        statusCode: response.statusCode,
+                        body: chunks.join()
+                    };
                     try {
                         if (headers['Content-Type'] === 'application/json') {
-                            result = JSON.parse(result);
+                            result.body = JSON.parse(result.body);
                         }
                         if (response.statusCode >= 400) {
                             return reject(result);

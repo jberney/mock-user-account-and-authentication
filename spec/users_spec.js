@@ -35,13 +35,14 @@ describe('Users', () => {
                 }, done);
             });
             it('returns the user', done => {
+                const expected = {
+                    resources: [{
+                        id: 'USER_ID',
+                        userName: 'USER_NAME'
+                    }]
+                };
                 request({method, port, path})
-                    .then(assertResponse({
-                        resources: [{
-                            id: 'USER_ID',
-                            userName: 'USER_NAME'
-                        }]
-                    }))
+                    .then(assertResponse({statusCode: 200, body: expected}))
                     .then(() => expect(state.users.USER_ID).toEqual({
                         id: 'USER_ID',
                         userName: 'USER_NAME',
@@ -66,8 +67,11 @@ describe('Users', () => {
             const description = 'No user found where userName Eq "USER_NAME"';
             it('returns a 500', done => {
                 request({method, port, path})
-                    .then(response => console.log(response) || expect(true).toBeFalsy() || done())
-                    .catch(assertCatch({description}, done));
+                    .then(response => expect(true).toBeFalsy() || done())
+                    .catch(assertCatch({
+                        statusCode: 502,
+                        body: {description}
+                    }, done));
             });
         });
     });
@@ -108,7 +112,7 @@ describe('Users', () => {
             const expected = JSON.parse(JSON.stringify(body));
             expected.id = 'USER_ID';
             request({method, port, path, body})
-                .then(assertResponse(expected))
+                .then(assertResponse({statusCode: 200, body: expected}))
                 .then(() => expect(state.users.USER_ID).toEqual(expected))
                 .then(done)
                 .catch(caught(done));
