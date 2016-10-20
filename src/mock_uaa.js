@@ -1,8 +1,21 @@
 const uuid = require('node-uuid');
 const values = require('object.values');
 
+const html = () => [
+    '<form method="post">',
+    '<input name="username">',
+    '<input name="password">',
+    '<input type="submit">',
+    '</form>'
+].join('\n');
+
 module.exports = {
-    listUsers: state => {
+    html,
+    getOauthAuthorize: (req, res) => {
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html());
+    },
+    getUsers: state => {
         return (req, res) => {
             const {attributes = '', filter} = req.query;
             const filterElements = filter.split(' ', 3);

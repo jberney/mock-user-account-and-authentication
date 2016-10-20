@@ -20,16 +20,18 @@ module.exports = {
             done();
         };
     },
-    request: ({method = 'get', port, path, body}) => {
+    request: ({
+        method = 'get', port, path, body, headers = {
+        'Content-Type': 'application/json'
+    }
+    }) => {
         return new Promise((resolve, reject) => {
             const req = http.request({
                 method,
                 host,
                 port,
                 path,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 rejectUnauthorized: false,
                 requestCert: true,
                 agent: false
@@ -39,13 +41,15 @@ module.exports = {
                     chunks.push(chunk);
                 });
                 response.on('end', function () {
-                    const joined = chunks.join();
+                    let result = chunks.join();
                     try {
-                        const parsed = JSON.parse(joined);
-                        if (response.statusCode >= 400) {
-                            return reject(parsed);
+                        if (headers['Content-Type'] === 'application/json') {
+                            result = JSON.parse(result);
                         }
-                        return resolve(parsed);
+                        if (response.statusCode >= 400) {
+                            return reject(result);
+                        }
+                        return resolve(result);
                     } catch (e) {
                         reject(e);
                     }
