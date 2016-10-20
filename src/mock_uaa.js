@@ -10,6 +10,7 @@ const html = () => [
 ].join('\n');
 
 function redirect(req, res) {
+    req.session.loggedIn = Date.now();
     const accessToken = ['junk', new Buffer(JSON.stringify({
         user_name: 'USERNAME',
         user_id: 'USERID',
@@ -23,6 +24,9 @@ function redirect(req, res) {
 module.exports = {
     html,
     getOauthAuthorize: (req, res) => {
+        if (req.session.loggedIn) {
+            return redirect(req, res);
+        }
         res.setHeader('Content-Type', 'text/html');
         res.send(html());
     },

@@ -13,8 +13,7 @@ describe('Users', () => {
         state = {users: {}};
         done();
     });
-
-
+    
     afterEach(() => {
         server && server.close();
     });
