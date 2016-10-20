@@ -42,7 +42,7 @@ describe('OAuth Token Endpoint', () => {
         beforeEach(done => {
             server = ServerFactory.newServer({port}, done);
         });
-        it('sets session.loggedIn to true and 301 redirects', done => {
+        it('301 redirects', done => {
             request({method, port, path, headers, body})
                 .then(assertResponse({statusCode: 301, body: expected}))
                 .then(done)
