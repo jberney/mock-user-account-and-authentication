@@ -10,10 +10,11 @@ const html = () => [
 ].join('\n');
 
 function redirect(req, res) {
+    console.log({req});
     req.session.loggedIn = Date.now();
     const accessToken = ['junk', new Buffer(JSON.stringify({
-        user_name: 'USERNAME',
-        user_id: 'USERID',
+        user_name: req.body.username,
+        user_id: 'USER_GUID',
         scope: ['cloud_controller.admin', 'usage_service.audit']
     })).toString('base64')].join('.');
     const hash = ['access_token', accessToken].join('=');

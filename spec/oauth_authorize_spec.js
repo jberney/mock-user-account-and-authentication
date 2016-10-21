@@ -35,8 +35,11 @@ describe('OAuth Token Endpoint', () => {
         const method = 'post';
         const path = '/oauth/authorize';
         const headers = {'Content-Type': 'text/html'};
-        const body = {};
-        const accessToken = 'eyJ1c2VyX25hbWUiOiJVU0VSTkFNRSIsInVzZXJfaWQiOiJVU0VSSUQiLCJzY29wZSI6WyJjbG91ZF9jb250cm9sbGVyLmFkbWluIiwidXNhZ2Vfc2VydmljZS5hdWRpdCJdfQ==';
+        const body = {
+            username: 'user@example.com',
+            password: 'secret'
+        };
+        const accessToken = 'eyJ1c2VyX2lkIjoiVVNFUl9HVUlEIiwic2NvcGUiOlsiY2xvdWRfY29udHJvbGxlci5hZG1pbiIsInVzYWdlX3NlcnZpY2UuYXVkaXQiXX0=';
         const expected = `Moved Permanently. Redirecting to #access_token=junk.${accessToken}`;
 
         beforeEach(done => {
@@ -53,8 +56,11 @@ describe('OAuth Token Endpoint', () => {
     describe('POST, GET /oauth/authorize', () => {
         const path = '/oauth/authorize';
         const headers = {'Content-Type': 'text/html'};
-        const body = {};
-        const accessToken = 'eyJ1c2VyX25hbWUiOiJVU0VSTkFNRSIsInVzZXJfaWQiOiJVU0VSSUQiLCJzY29wZSI6WyJjbG91ZF9jb250cm9sbGVyLmFkbWluIiwidXNhZ2Vfc2VydmljZS5hdWRpdCJdfQ=,=';
+        const body = {
+            username: 'user@example.com',
+            password: 'secret'
+        };
+        const accessToken = 'eyJ1c2VyX2lkIjoiVVNFUl9HVUlEIiwic2NvcGUiOlsiY2xvdWRfY29udHJvbGxlci5hZG1pbiIsInVzYWdlX3NlcnZpY2UuYXVkaXQiXX0,=';
         const expected = `Moved Permanently. Redirecting to #access_token=junk.${accessToken}`;
 
         beforeEach(done => {
