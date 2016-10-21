@@ -5,13 +5,13 @@ const host = 'localhost';
 module.exports = {
     assertCatch: (expected, done) => {
         return e => {
-            expect(e).toEqual(expected);
+            expect(e).toEqual(jasmine.objectContaining(expected));
             done();
         };
     },
     assertResponse: (expected) => {
         return actual => {
-            expect(actual).toEqual(expected);
+            expect(actual).toEqual(jasmine.objectContaining(expected));
         };
     },
     caught: (done) => {
@@ -43,6 +43,7 @@ module.exports = {
                 response.on('end', function () {
                     let result = {
                         statusCode: response.statusCode,
+                        headers: response.headers,
                         body: chunks.join()
                     };
                     try {

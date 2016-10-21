@@ -13,7 +13,7 @@ describe('Users', () => {
         state = {users: {}};
         done();
     });
-    
+
     afterEach(() => {
         server && server.close();
     });
@@ -64,7 +64,7 @@ describe('Users', () => {
                 }, done);
             });
             const description = 'No user found where userName Eq "USER_NAME"';
-            it('returns a 500', done => {
+            it('returns a 502', done => {
                 request({method, port, path})
                     .then(response => expect(true).toBeFalsy() || done())
                     .catch(assertCatch({
