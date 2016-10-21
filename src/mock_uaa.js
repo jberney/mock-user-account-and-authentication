@@ -10,7 +10,6 @@ const html = () => [
 ].join('\n');
 
 function redirect(req, res) {
-    console.log({req});
     req.session.loggedIn = Date.now();
     const accessToken = ['junk', new Buffer(JSON.stringify({
         user_name: req.body.username,
