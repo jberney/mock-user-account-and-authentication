@@ -1,4 +1,3 @@
-const FormData = require('form-data');
 const http = require('http');
 
 const host = 'localhost';
@@ -67,19 +66,6 @@ module.exports = {
             }, handleResponse({isJson, resolve, reject}));
             body && req.write(JSON.stringify(body));
             req.end();
-        });
-    },
-    postForm({port, path, body}) {
-        const form = new FormData();
-        Object.keys(body).forEach(field => {
-            form.append(field, body[field]);
-        });
-        return new Promise((resolve, reject) => {
-            form.submit(`http://localhost:${port}${path}`, function (err, res) {
-                if (err) return reject(err);
-                res.resume();
-                handleResponse({resolve, reject})(res);
-            });
         });
     }
 };

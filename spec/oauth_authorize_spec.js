@@ -1,5 +1,5 @@
 const MockUaa = require('../src/mock_uaa');
-const {assertResponse, caught, request, postForm} = require('./spec_helper');
+const {assertResponse, caught, request} = require('./spec_helper');
 
 describe('OAuth Token Endpoint', () => {
 
