@@ -9,6 +9,7 @@ module.exports = {
     newApp(state = {}) {
         const app = express();
         app.set('trust proxy', 1);
+        app.use(bodyParser.urlencoded({extended: false}));
         app.use(bodyParser.json());
         app.use(session({
             secret: uuid.v4()

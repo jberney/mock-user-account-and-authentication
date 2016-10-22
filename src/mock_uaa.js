@@ -4,7 +4,7 @@ const values = require('object.values');
 const html = () => [
     '<form method="post">',
     '<input name="username">',
-    '<input name="password">',
+    '<input name="password" type="password">',
     '<input type="submit">',
     '</form>'
 ].join('\n');

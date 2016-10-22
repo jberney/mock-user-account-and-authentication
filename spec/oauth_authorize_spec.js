@@ -1,5 +1,5 @@
 const MockUaa = require('../src/mock_uaa');
-const {assertResponse, caught, request} = require('./spec_helper');
+const {assertResponse, caught, request, postForm} = require('./spec_helper');
 
 describe('OAuth Token Endpoint', () => {
 
@@ -34,7 +34,7 @@ describe('OAuth Token Endpoint', () => {
     describe('POST /oauth/authorize', () => {
         const method = 'post';
         const path = '/oauth/authorize';
-        const headers = {'Content-Type': 'text/html'};
+        const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
         const body = {
             username: 'user@example.com',
             password: 'secret'
@@ -54,8 +54,9 @@ describe('OAuth Token Endpoint', () => {
     });
 
     describe('POST, GET /oauth/authorize', () => {
+        const method = 'post';
         const path = '/oauth/authorize';
-        const headers = {'Content-Type': 'text/html'};
+        const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
         const body = {
             username: 'user@example.com',
             password: 'secret'
@@ -67,12 +68,9 @@ describe('OAuth Token Endpoint', () => {
             server = ServerFactory.newServer({port}, done);
         });
         it('301 redirects on the GET', done => {
-            request({method: 'post', port, path, headers, body})
-                .then(response => response.headers['set-cookie'][0])
-                .then(cookie => {
-                    headers.cookie = cookie;
-                    return request({method: 'get', port, path, headers})
-                })
+            request({method, port, path, headers, body})
+                .then(response => ({cookie: response.headers['set-cookie'][0]}))
+                .then(headers => request({method: 'get', port, path, headers}))
                 .then(assertResponse({statusCode: 301, body: expected}))
                 .then(done)
                 .catch(caught(done));
