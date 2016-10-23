@@ -23,14 +23,14 @@ function redirect(req, res) {
 
 module.exports = {
     html,
-    getOauthAuthorize: (req, res) => {
+    getOauthAuthorize (req, res) {
         if (req.session.loggedIn) {
             return redirect(req, res);
         }
         res.setHeader('Content-Type', 'text/html');
         res.send(html());
     },
-    getUsers: state => {
+    getUsers(state) {
         return (req, res) => {
             const {attributes = '', filter} = req.query;
             const filterElements = filter.split(' ', 3);
@@ -58,7 +58,12 @@ module.exports = {
             res.json({resources});
         };
     },
-    postOauthToken: (req, res) => {
+    logout(req, res) {
+        req.session && delete req.session.loggedIn;
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html());
+    },
+    postOauthToken(req, res) {
         const accessToken = uuid.v4();
         res.json({
             access_token: accessToken,
@@ -66,10 +71,10 @@ module.exports = {
             expires_in: 3600
         });
     },
-    postUsers: state => {
+    postUsers(state) {
         return (req, res) => {
             req.body.id = uuid.v4();
-            state.users[req.body.id] = req.body;
+            state.users[req.body.id] = Object.assign({}, state.users[req.body.id], req.body);
             res.json(state.users[req.body.id]);
         };
     },

@@ -1,7 +1,7 @@
 const MockUaa = require('../src/mock_uaa');
 const {assertResponse, caught, request} = require('./spec_helper');
 
-describe('OAuth Token Endpoint', () => {
+describe('OAuth Authorize Endpoint', () => {
 
     const port = Math.round(1000 + Math.random() * 60000);
 
@@ -18,7 +18,7 @@ describe('OAuth Token Endpoint', () => {
     describe('GET /oauth/authorize', () => {
         const method = 'get';
         const path = '/oauth/authorize';
-        const headers = {'Content-Type': 'text/html'};
+        const headers = {Accept: 'text/html'};
 
         beforeEach(done => {
             server = ServerFactory.newServer({port}, done);
@@ -34,7 +34,7 @@ describe('OAuth Token Endpoint', () => {
     describe('POST /oauth/authorize', () => {
         const method = 'post';
         const path = '/oauth/authorize';
-        const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+        const headers = {Accept: 'text/plain', 'Content-Type': 'application/x-www-form-urlencoded'};
         const body = {
             username: 'user@example.com',
             password: 'secret'
@@ -56,7 +56,7 @@ describe('OAuth Token Endpoint', () => {
     describe('POST, GET /oauth/authorize', () => {
         const method = 'post';
         const path = '/oauth/authorize';
-        const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+        const headers = {Accept: 'text/plain', 'Content-Type': 'application/x-www-form-urlencoded'};
         const body = {
             username: 'user@example.com',
             password: 'secret'
@@ -69,7 +69,7 @@ describe('OAuth Token Endpoint', () => {
         });
         it('301 redirects on the GET', done => {
             request({method, port, path, headers, body})
-                .then(response => ({cookie: response.headers['set-cookie'][0]}))
+                .then(response => ({Accept: 'text/plain', Cookie: response.headers['set-cookie'][0]}))
                 .then(headers => request({method: 'get', port, path, headers}))
                 .then(assertResponse({statusCode: 301, body: expected}))
                 .then(done)

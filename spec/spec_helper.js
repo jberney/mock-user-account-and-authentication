@@ -47,13 +47,10 @@ module.exports = {
             done();
         };
     },
-    request: ({
-        method = 'get', port, path, body, headers = {
-        'Content-Type': 'application/json'
-    }
-    }) => {
+    request: ({method, port, path, body, headers}) => {
+        headers = Object.assign({}, {Accept: 'application/json'}, headers);
+        const isJson = headers.Accept === 'application/json';
         return new Promise((resolve, reject) => {
-            const isJson = headers['Content-Type'] === 'application/json';
             const req = http.request({
                 method,
                 host,

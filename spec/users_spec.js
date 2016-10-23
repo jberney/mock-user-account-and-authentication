@@ -78,6 +78,7 @@ describe('Users', () => {
     describe('POST /Users', () => {
         const method = 'post';
         const path = '/Users';
+        const headers = {'Content-Type': 'application/json'};
         const body = {
             "externalId": "test-user",
             "meta": {
@@ -110,7 +111,7 @@ describe('Users', () => {
         it('with client credentials', done => {
             const expected = JSON.parse(JSON.stringify(body));
             expected.id = 'USER_ID';
-            request({method, port, path, body})
+            request({method, port, path, headers, body})
                 .then(assertResponse({statusCode: 200, body: expected}))
                 .then(() => expect(state.users.USER_ID).toEqual(expected))
                 .then(done)
