@@ -12,6 +12,8 @@ module.exports = {
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(bodyParser.json());
         app.use(session({
+            resave: false,
+            saveUninitialized: false,
             secret: uuid.v4()
         }));
         app.use(function (req, res, next) {
