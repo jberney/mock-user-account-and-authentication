@@ -12,7 +12,8 @@
   "devDependencies": {
     "coveralls": "^2.11.14",
     "istanbul": "^0.4.5",
-    "jasmine": "^2.5.2"
+    "jasmine": "^2.5.2",
+    "querystring": "^0.2.0"
   },
   "scripts": {
     "test": "istanbul cover --root ./src --include-all-sources node_modules/.bin/jasmine"

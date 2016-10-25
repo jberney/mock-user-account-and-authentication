@@ -9,6 +9,15 @@ const html = () => [
     '</form>'
 ].join('\n');
 
+const acceptInvitationHtml = code => [
+    '<form method="post">',
+    '<input name="password" type="password">',
+    '<input name="password_confirmation" type="password">',
+    `<input name="redirect_uri" type="hidden" value="${code}">`,
+    '<input type="submit">',
+    '</form>'
+].join('\n');
+
 function redirect(req, res) {
     req.session.loggedIn = Date.now();
     const accessToken = ['junk', new Buffer(JSON.stringify({
@@ -22,8 +31,12 @@ function redirect(req, res) {
 };
 
 module.exports = {
-    html,
-    getOauthAuthorize (req, res) {
+    acceptInvitationHtml,
+    getAcceptInvitation({query: {code}}, res) {
+        res.setHeader('Content-Type', 'text/html');
+        res.send(acceptInvitationHtml(code));
+    },
+    getOauthAuthorize(req, res) {
         if (req.session.loggedIn) {
             return redirect(req, res);
         }
@@ -58,10 +71,14 @@ module.exports = {
             res.json({resources});
         };
     },
+    html,
     logout(req, res) {
         req.session && delete req.session.loggedIn;
         res.setHeader('Content-Type', 'text/html');
         res.send(html());
+    },
+    postAcceptInvitation({body: {redirect_uri}}, res) {
+        res.redirect(301, decodeURIComponent(redirect_uri));
     },
     postOauthToken(req, res) {
         const accessToken = uuid.v4();

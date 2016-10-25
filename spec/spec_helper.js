@@ -1,4 +1,5 @@
 const http = require('http');
+const querystring = require('querystring');
 
 const host = 'localhost';
 
@@ -61,7 +62,9 @@ module.exports = {
                 requestCert: true,
                 agent: false
             }, handleResponse({isJson, resolve, reject}));
-            body && req.write(JSON.stringify(body));
+            body && req.write(headers['Content-Type'] === 'application/json'
+                ? JSON.stringify(body)
+                : querystring.stringify(body));
             req.end();
         });
     }
