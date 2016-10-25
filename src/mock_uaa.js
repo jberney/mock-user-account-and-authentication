@@ -20,11 +20,12 @@ const acceptInvitationHtml = code => [
 
 function redirect(req, res) {
     req.session.loggedIn = Date.now();
-    const accessToken = ['junk', new Buffer(JSON.stringify({
+    console.log({username: req.body.username})
+    const accessToken = ['junk', Buffer.from(JSON.stringify({
         user_name: req.body.username,
         user_id: 'USER_GUID',
         scope: ['cloud_controller.admin', 'usage_service.audit']
-    })).toString('base64')].join('.');
+    }), 'utf8').toString('base64')].join('.');
     const hash = ['access_token', accessToken].join('=');
     const redirectUrl = [req.query.redirect_uri, hash].join('#');
     res.redirect(301, redirectUrl);

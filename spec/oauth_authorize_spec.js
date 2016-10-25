@@ -3,12 +3,6 @@ const {assertResponse, caught, request} = require('./spec_helper');
 
 describe('OAuth Authorize Endpoint', () => {
 
-    const accessToken = (user_name) => ['junk', new Buffer(JSON.stringify({
-        user_name,
-        user_id: 'USER_GUID',
-        scope: ['cloud_controller.admin', 'usage_service.audit']
-    })).toString('base64')].join('.');
-
     const port = Math.round(1000 + Math.random() * 60000);
 
     let res, ServerFactory, server;
@@ -48,14 +42,23 @@ describe('OAuth Authorize Endpoint', () => {
             username: 'user@example.com',
             password: 'secret'
         };
-        const expected = `Moved Permanently. Redirecting to #access_token=${accessToken('user@example.com')}`;
 
         beforeEach(done => {
             server = ServerFactory.newServer({port}, done);
         });
         it('301 redirects', done => {
             request({method, port, path, headers, body})
-                .then(assertResponse({statusCode: 301, body: expected}))
+                .then(response => {
+                    const location = response.headers.location;
+                    const tokenTail = location.split('.').pop();
+                    expect(location).toMatch(`^#access_token=junk\.${tokenTail}$`);
+                    const tokenData = JSON.parse(Buffer.from(tokenTail, 'base64').toString('utf8'));
+                    expect(tokenData.user_name).toBe('user@example.com');
+                    expect(tokenData.user_id).toBe('USER_GUID');
+                    expect(tokenData.scope).toEqual(['cloud_controller.admin', 'usage_service.audit']);
+                    return response;
+                })
+                .then(assertResponse({statusCode: 301}))
                 .then(done)
                 .catch(caught(done));
         });
@@ -72,7 +75,6 @@ describe('OAuth Authorize Endpoint', () => {
             username: 'user@example.com',
             password: 'secret'
         };
-        const expected = `Moved Permanently. Redirecting to #access_token=${accessToken()}`;
 
         beforeEach(done => {
             server = ServerFactory.newServer({port}, done);
@@ -84,7 +86,17 @@ describe('OAuth Authorize Endpoint', () => {
                     Cookie: response.headers['set-cookie'][0]
                 }))
                 .then(headers => request({method: 'get', port, path, headers}))
-                .then(assertResponse({statusCode: 301, body: expected}))
+                .then(response => {
+                    const location = response.headers.location;
+                    const tokenTail = location.split('.').pop();
+                    expect(location).toMatch(`^#access_token=junk\.${tokenTail}$`);
+                    const tokenData = JSON.parse(Buffer.from(tokenTail, 'base64').toString('utf8'));
+                    expect(tokenData.username).toBeFalsy();
+                    expect(tokenData.user_id).toBe('USER_GUID');
+                    expect(tokenData.scope).toEqual(['cloud_controller.admin', 'usage_service.audit']);
+                    return response;
+                })
+                .then(assertResponse({statusCode: 301}))
                 .then(done)
                 .catch(caught(done));
         });
